@@ -4,7 +4,6 @@ import data from "./data";
 import 'bulma/css/bulma.min.css';
 
 const users = data.results;
-
 // User Component -- function style
 function User(props) {
   return (
@@ -35,6 +34,29 @@ function User(props) {
     </div>
     </div>
   );
+}
+
+class Clicky extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.state = {clickCount: 0};
+    this.handleClick = this.handleCLick.bind(this);
+  }
+
+  handleCLick() {
+    this.setState( prevState => ({
+      clickCount: this.state.clickCount + 1
+    }));
+  }
+
+  render() {
+    return(
+      <div>
+        <p>{this.state.clickCount}</p><button onClick={this.handleClick}>Like</button>
+      </div>
+    );
+  }
 }
 
 const userList = users.map( u =>
