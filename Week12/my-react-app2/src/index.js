@@ -1,77 +1,45 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import data from "./data";
+import UserCard from './UserCard';
 import 'bulma/css/bulma.min.css';
+import axios from 'axios';
 
-const users = data.results;
-// User Component -- function style
-function User(props) {
-  return (
-    <div className="column is-3">
-      <div className="card">
-        <div className="card-image">
-          <figure className="image is-4by3">
-            <img src={props.image} alt="Placeholder image"></img>
-          </figure>
-        </div>
-        <div className="card-content">
-          <div className="media">
-            <div className="media-left">
-              <figure className="image is-48x48">
-                <img src={props.image} alt="Placeholder image"></img>
-              </figure>
-            </div>
-            <div className="media-content">
-              <p className="title is-4">{props.title} {props.first} {props.last}</p>
-              <p className="subtitle is-6">@{props.first}{props.last}</p>
-            </div>
-          </div>
-          <div className="content">
-            {props.quote} <a>@bulmaio</a>.
-            <a href="#">#css</a> <a href="#">#responsive</a>
-          </div>
-        </div>
-    </div>
-    </div>
-  );
-}
-
-class Clicky extends React.Component {
-  constructor(props){
+class UserGrid extends React.Component {
+  constructor(props) {
     super(props);
 
-    this.state = {clickCount: 0};
-    this.handleClick = this.handleCLick.bind(this);
+    this.state = {users: []};
   }
 
-  handleCLick() {
-    this.setState( prevState => ({
-      clickCount: this.state.clickCount + 1
-    }));
+  componentDidMount (){
+    axios.get('https://randomuser.me/api/?results=50')
+    .then(response => {
+      this.setState({users: response.data.results});
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
-  render() {
-    return(
-      <div>
-        <p>{this.state.clickCount}</p><button onClick={this.handleClick}>Like</button>
-      </div>
-    );
+  render(){
+    const userList = this.state.users.map( u =>(
+      <UserCard key={
+        u.id}
+        title={u.name.title}
+        name={u.name.first}
+        last={u.name.last}
+        quote={u.quote}
+        image={u.picture.large}
+        /> ));
+        return(
+          <div className="columns is-multiline">
+          {userList}
+          </div>
+        )
   }
 }
 
-const userList = users.map( u =>
-  <User key={
-    u.id}
-    title={u.name.title}
-    name={u.name.first}
-    last={u.name.last}
-    quote={u.quote}
-    image={u.picture.large}
-    /> );
-
 ReactDOM.render(
-  <div className="columns is-multiline">
-  {userList}
-  </div>,
+  <UserGrid />,
   document.getElementById('root')
 );
