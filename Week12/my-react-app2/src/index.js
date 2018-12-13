@@ -1,45 +1,42 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import UserCard from './UserCard';
+import React from "react";
+import ReactDOM from "react-dom";
+import CommentCard from './CommentCard';
 import 'bulma/css/bulma.min.css';
-import axios from 'axios';
 
-class UserGrid extends React.Component {
+// 'Outer' component that will contain all the User 'cards'
+class CommentGrid extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {users: []};
+    this.state = { comments: [] };
   }
 
-  componentDidMount (){
-    axios.get('https://randomuser.me/api/?results=50')
-    .then(response => {
-      this.setState({users: response.data.results});
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  // Runs when component is mounted
+  componentDidMount() {
+    // Get data for 50 users
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+      .then(response => response.json())
+      .then(json => console.log(json))
   }
 
-  render(){
-    const userList = this.state.users.map( u =>(
-      <UserCard key={
-        u.id}
-        title={u.name.title}
-        name={u.name.first}
-        last={u.name.last}
-        quote={u.quote}
-        image={u.picture.large}
-        /> ));
-        return(
-          <div className="columns is-multiline">
-          {userList}
-          </div>
-        )
+  render() {
+    const commentList = this.state.comments.map(c => (
+      <CommentCard
+        key={c.id}
+        name={c.name}
+        email={c.email}
+        body={c.body}
+      />
+    ));
+
+    return (
+    <div className="container">
+      <div className="row">
+      {commentList}
+      </div>
+    </div>
+    );
   }
 }
 
-ReactDOM.render(
-  <UserGrid />,
-  document.getElementById('root')
-);
+ReactDOM.render(<CommentGrid />, document.getElementById("root"));
